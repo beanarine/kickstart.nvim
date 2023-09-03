@@ -59,6 +59,12 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+vim.opt.termguicolors = true
+vim.cmd [[highlight IndentBlanklineContextChar guifg=#00FF00 gui=nocombine]]
+
+vim.opt.list = true
+vim.opt.listchars:append "space:⋅"
+
 -- NOTE: Here is where you install your plugins.
 --  You can configure plugins using the `config` key.
 --
@@ -132,11 +138,81 @@ require('lazy').setup({
   },
 
   {
-    -- Theme inspired by Atom
-    'navarasu/onedark.nvim',
+    -- Catppuccin theme - the only theme you ever need
+    'catppuccin/nvim',
+    name = 'catppuccin',
     priority = 1000,
     config = function()
-      vim.cmd.colorscheme 'onedark'
+      require("catppuccin").setup({
+        flavour = "mocha", -- latte, frappe, macchiato, mocha
+        background = { -- :h background
+          light = "latte",
+          dark = "mocha",
+        },
+        transparent_background = false, -- disables setting the background color.
+        show_end_of_buffer = false, -- shows the '~' characters after the end of buffers
+        term_colors = false, -- sets terminal colors (e.g. `g:terminal_color_0`)
+        dim_inactive = {
+          enabled = false, -- dims the background color of inactive window
+          shade = "dark",
+          percentage = 0.15, -- percentage of the shade to apply to the inactive window
+        },
+        no_italic = false, -- Force no italic
+        no_bold = false, -- Force no bold
+        no_underline = false, -- Force no underline
+        styles = { -- Handles the styles of general hi groups (see `:h highlight-args`):
+          comments = { "italic" }, -- Change the style of comments
+          conditionals = { "italic" },
+          loops = {},
+          functions = {},
+          keywords = {},
+          strings = {},
+          variables = {},
+          numbers = {},
+          booleans = {},
+          properties = {},
+          types = {},
+          operators = {},
+        },
+        color_overrides = {},
+        custom_highlights = {},
+        integrations = {
+          cmp = true,
+          gitsigns = true,
+          nvimtree = true,
+          treesitter = true,
+          treesitter_context = true,
+          notify = false,
+          mini = false,
+          neotree = true,
+          native_lsp = {
+            enabled = true,
+            virtual_text = {
+              errors = { "italic" },
+              hints = { "italic" },
+              warnings = { "italic" },
+              information = { "italic" },
+            },
+            underlines = {
+              errors = { "underline" },
+              hints = { "underline" },
+              warnings = { "underline" },
+              information = { "underline" },
+            },
+            inlay_hints = {
+              background = true,
+            },
+          },
+          which_key = false,
+          indent_blankline = {
+            enabled = true,
+            colored_indent_levels = true,
+          },
+
+          -- For more plugins integrations please scroll down (https://github.com/catppuccin/nvim#integrations)
+        },
+      })
+      vim.cmd.colorscheme 'catppuccin'
     end,
   },
 
@@ -147,7 +223,7 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = false,
-        theme = 'onedark',
+        theme = 'catppuccin',
         component_separators = '|',
         section_separators = '',
       },
@@ -160,11 +236,11 @@ require('lazy').setup({
     -- Enable `lukas-reineke/indent-blankline.nvim`
     -- See `:help indent_blankline.txt`
     opts = {
-      char = '┊',
-      show_trailing_blankline_indent = false,
+      space_char_blankline = " ",
+      show_current_context = true,
+      show_current_context_start = true,
     },
   },
-
   -- "gc" to comment visual regions/lines
   { 'numToStr/Comment.nvim', opts = {} },
 
@@ -210,7 +286,7 @@ require('lazy').setup({
   --    Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --
   --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
 }, {})
 
 -- [[ Setting options ]]
